@@ -34,3 +34,7 @@ class ModelDownloader:
             raise NotImplementedError("Loading LoRA from downloaded file not yet implemented")
         else:
             raise ValueError(f"Invalid model type: {model_type}")
+
+NODE_CLASS_MAPPINGS = {
+    "ModelDownloader": ModelDownloader,
+}
