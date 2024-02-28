@@ -1,36 +1,24 @@
 {
-    "name": "Download Model",
-    "category": "advanced/loaders",
-    "inputs": [
-      {
-        "name": "LINK",
-        "type": "string"
-      },
-      {
-        "name": "OUTPUT",
-        "type": "string"
-      },
-      {
-        "name": "MODEL_TYPE",
-        "type": "enum",
-        "options": ["checkpoint", "lora"]
-      }
-    ],
-    "outputs": [
-      {
-        "name": "MODEL",
-        "type": "model"
-      },
-      {
-        "name": "CLIP",
-        "type": "clip",
-        "optional": True
-      },
-      {
-        "name": "VAE",
-        "type": "vae",
-        "optional": True
-      }
-    ],
-    "function": "download_model"
-  }
+  "name": "Model Downloader",
+  "description": "Downloads a checkpoint model from a provided URL.",
+  "category": "Utilities",
+  "inputs": [
+    {
+      "name": "LINK",
+      "type": "string",
+      "label": "Model Download Link"
+    },
+    {
+      "name": "OUTPUT",
+      "type": "string",
+      "label": "Output Directory"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "MODEL",
+      "type": "any",
+      "label": "Loaded Model"
+    }
+  ]
+}
