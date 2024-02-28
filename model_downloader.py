@@ -104,5 +104,5 @@ class LoRADownloader:
 
 NODE_CLASS_MAPPINGS = {
     "ModelDownloader": Model Downloader,
-    "LoRADownloader": LoRA Downloader,
+    "LoRADownloader": LoRA Downloader
 }
