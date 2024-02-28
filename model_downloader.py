@@ -85,25 +85,25 @@ class LoRADownloader:
             return None
 
     def download_lora(self, link, output):
-    try:
-        response = requests.get(link, stream=True)
-        if response.status_code == 200:
-            # Extract filename from URL
-            filename = os.path.basename(unquote(link.strip('/').split('/')[-1]))
-            # Ensure the output directory exists
-            os.makedirs(output, exist_ok=True)
-            # Save downloaded file to output directory
-            downloaded_file = os.path.join(output, filename)
-            with open(downloaded_file, 'wb') as f:
-                for chunk in response.iter_content(chunk_size=1024):
-                    f.write(chunk)
-            return downloaded_file  # Return the path to the downloaded file
-        else:
-            print(f"Error downloading Lora file: HTTP status code {response.status_code}")
+        try:
+            response = requests.get(link, stream=True)
+            if response.status_code == 200:
+                # Extract filename from URL
+                filename = os.path.basename(unquote(link.strip('/').split('/')[-1]))
+                # Ensure the output directory exists
+                os.makedirs(output, exist_ok=True)
+                # Save downloaded file to output directory
+                downloaded_file = os.path.join(output, filename)
+                with open(downloaded_file, 'wb') as f:
+                    for chunk in response.iter_content(chunk_size=1024):
+                        f.write(chunk)
+                return downloaded_file  # Return the path to the downloaded file
+            else:
+                print(f"Error downloading Lora file: HTTP status code {response.status_code}")
+                return None
+        except Exception as e:
+            print(f"Error downloading Lora file: {e}")
             return None
-    except Exception as e:
-        print(f"Error downloading Lora file: {e}")
-        return None
 
 NODE_CLASS_MAPPINGS = {
     "ModelDownloader": ModelDownloader,
