@@ -1,1 +1,1 @@
-from model_downloader import ModelDownloader
+from .model_downloader import ModelDownloader
