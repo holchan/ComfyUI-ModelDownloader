@@ -12,6 +12,23 @@ class ModelDownloader:
     MODEL_TYPE = "Checkpoint"  # Default value
 
     @classmethod
+    def INPUT_TYPES(cls):
+        """
+        Provides information about required and optional inputs for the node.
+
+        Returns:
+            dict: A dictionary specifying input types and options.
+        """
+
+        return {
+            "required": {
+                "ckpt_name_or_link": (
+                    (folder_paths.get_filename_list("checkpoints"),),  # Local files
+                    ("STRING", {}),  # Download via link
+                )
+            }
+        }
+
     def download_model(self, link, output, model_type=None):
         """
         Downloads a model from a given link and returns its path.
@@ -69,7 +86,7 @@ class ModelDownloader:
         out = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"))
         return out[:3]
 
-
+# Update `node.json` to reflect the single class
 NODE_CLASS_MAPPINGS = {
     "ModelDownloader": ModelDownloader,
 }
