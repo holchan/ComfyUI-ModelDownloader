@@ -103,6 +103,6 @@ class LoRADownloader:
             return None
 
 NODE_CLASS_MAPPINGS = {
-    "ModelDownloader": Model Downloader,
-    "LoRADownloader": LoRA Downloader
+    "ModelDownloader": ModelDownloader,
+    "LoRADownloader": LoRADownloader
 }
