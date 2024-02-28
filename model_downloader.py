@@ -1,5 +1,4 @@
 import os
-import subprocess
 import requests
 from urllib.parse import unquote
 import comfy.sd
@@ -35,14 +34,12 @@ class ModelDownloader:
             
             response = requests.get(link, stream=True)
             if response.status_code == 200:
-                # Try to get the filename from the Content-Disposition header
-                if 'Content-Disposition' in response.headers:
-                    disposition = response.headers['Content-Disposition']
-                    filename = disposition.split('filename=')[1]
-                    filename = unquote(filename).strip('"')
-                else:
-                    # If the filename is not provided, use a default name
-                    filename = os.path.basename(link)
+                # Try to get the filename from the URL
+                filename = os.path.basename(unquote(link.strip('/').split('/')[-1]))
+                
+                # Check if the filename has a valid extension, if not, append ".dat"
+                if '.' not in filename:
+                    filename += ".safetensors"
                 
                 downloaded_file = os.path.join(output, filename)
                 with open(downloaded_file, 'wb') as f:
