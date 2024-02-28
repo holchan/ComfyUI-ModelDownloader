@@ -3,6 +3,8 @@ import subprocess
 import comfy.sd
 
 class ModelDownloader:
+    RETURN_TYPES = ("MODEL", "CLIP", "VAE")
+
     @staticmethod
     def INPUT_TYPES():
         return {
