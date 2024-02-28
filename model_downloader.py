@@ -28,12 +28,13 @@ class ModelDownloader:
             return None
 
         # Load the downloaded model based on its type
-        if model_type == "checkpoint":
-            return comfy.sd.load_checkpoint(downloaded_file)
-        elif model_type == "lora":
-            raise NotImplementedError("Loading LoRA from downloaded file not yet implemented")
-        else:
-            raise ValueError(f"Invalid model type: {model_type}")
+    if model_type == "checkpoint":
+        model = comfy.sd.load_checkpoint(downloaded_file)  # Load checkpoint
+        return model, model.clip, model.vae  # Return model, CLIP, and VAE
+    elif model_type == "lora":
+        raise NotImplementedError("Loading LoRA from downloaded file not yet implemented")
+    else:
+        raise ValueError(f"Invalid model type: {model_type}")
 
 NODE_CLASS_MAPPINGS = {
     "ModelDownloader": ModelDownloader,
