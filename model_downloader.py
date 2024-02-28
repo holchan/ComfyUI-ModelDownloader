@@ -30,6 +30,9 @@ class ModelDownloader:
     @staticmethod
     def download_model(link, output):
         try:
+            # Ensure the output directory exists
+            os.makedirs(output, exist_ok=True)
+            
             response = requests.get(link, stream=True)
             if response.status_code == 200:
                 # Try to get the filename from the Content-Disposition header
