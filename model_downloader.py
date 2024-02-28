@@ -1,5 +1,7 @@
 import os
 import subprocess
+import requests
+from urllib.parse import unquote
 import comfy.sd
 
 class ModelDownloader:
@@ -27,12 +29,27 @@ class ModelDownloader:
 
     @staticmethod
     def download_model(link, output):
-        wget_command = ["wget", link, "-P", output]
         try:
-            subprocess.run(wget_command, check=True)
-            downloaded_file = os.path.join(output, os.path.basename(link))
-            return downloaded_file
-        except subprocess.CalledProcessError as e:
+            response = requests.get(link, stream=True)
+            if response.status_code == 200:
+                # Try to get the filename from the Content-Disposition header
+                if 'Content-Disposition' in response.headers:
+                    disposition = response.headers['Content-Disposition']
+                    filename = disposition.split('filename=')[1]
+                    filename = unquote(filename).strip('"')
+                else:
+                    # If the filename is not provided, use a default name
+                    filename = os.path.basename(link)
+                
+                downloaded_file = os.path.join(output, filename)
+                with open(downloaded_file, 'wb') as f:
+                    for chunk in response.iter_content(chunk_size=1024):
+                        f.write(chunk)
+                return downloaded_file
+            else:
+                print(f"Error downloading file: HTTP status code {response.status_code}")
+                return None
+        except Exception as e:
             print(f"Error downloading file: {e}")
             return None
 
