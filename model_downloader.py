@@ -3,6 +3,7 @@ import subprocess
 import comfy.sd
 
 class ModelDownloader:
+    FUNCTION = "load_checkpoint"
     RETURN_TYPES = ("MODEL", "CLIP", "VAE")
 
     @staticmethod
