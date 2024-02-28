@@ -1,6 +1,6 @@
 import os
 import subprocess
-from comfyui import folder_paths, comfy
+import folder_paths, comfy.model_management
 
 class ModelDownloader:
     MODEL_TYPE = "Checkpoint"  # Default value
@@ -93,6 +93,8 @@ class CheckpointLoaderSimple:
 
         out = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"))
         return out[:3]
+
+
 
 NODE_CLASS_MAPPINGS = {
     "ModelDownloader": ModelDownloader,
