@@ -9,7 +9,7 @@ class ModelDownloader:
             "required": {
                 "LINK": ("STRING", {}),
                 "OUTPUT": ("STRING", {}),
-                "MODEL_TYPE": ("ENUM", {"options": ["checkpoint", "lora"]}),
+                "MODEL_TYPE": ("checkpoint", "lora", ),
             }
         }
 
