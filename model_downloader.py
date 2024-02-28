@@ -58,24 +58,25 @@ class LoRADownloader:
         self.loaded_lora = None
 
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(cls):
         return {"required": {
             "model": ("MODEL",),
             "clip": ("CLIP", ),
             "lora_link": ("STRING", {}),
             "strength_model": ("FLOAT", {"default": 1.0, "min": -20.0, "max": 20.0, "step": 0.01}),
             "strength_clip": ("FLOAT", {"default": 1.0, "min": -20.0, "max": 20.0, "step": 0.01}),
+            "output": ("STRING", {}),
         }}
 
     RETURN_TYPES = ("MODEL", "CLIP")
     FUNCTION = "load_lora"
     CATEGORY = "loaders"
 
-    def load_lora(self, model, clip, lora_link, strength_model, strength_clip):
+    def load_lora(self, model, clip, lora_link, strength_model, strength_clip, output):
         if strength_model == 0 and strength_clip == 0:
             return (model, clip)
 
-        downloaded_lora = self.download_lora(lora_link)
+        downloaded_lora = self.download_lora(lora_link, output)
         if downloaded_lora:
             model_lora, clip_lora = comfy.sd.load_lora_for_models(model, clip, downloaded_lora, strength_model, strength_clip)
             return (model_lora, clip_lora)
@@ -83,15 +84,20 @@ class LoRADownloader:
             print("Error loading Lora. Downloaded file not found.")
             return None
 
-    def download_lora(self, link):
+    def download_lora(self, link, output):
         try:
             response = requests.get(link, stream=True)
             if response.status_code == 200:
-                filename = os.path.basename(link)
-                with open(filename, 'wb') as f:
+                # Extract filename from URL
+                filename = os.path.basename(unquote(link.strip('/').split('/')[-1]))
+                # Ensure the output directory exists
+                os.makedirs(output, exist_ok=True)
+                # Save downloaded file to output directory
+                downloaded_file = os.path.join(output, filename)
+                with open(downloaded_file, 'wb') as f:
                     for chunk in response.iter_content(chunk_size=1024):
                         f.write(chunk)
-                return filename
+                return downloaded_file
             else:
                 print(f"Error downloading Lora file: HTTP status code {response.status_code}")
                 return None
