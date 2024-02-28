@@ -1,24 +1,29 @@
 {
   "name": "Model Downloader",
-  "description": "Downloads a checkpoint model from a provided URL.",
-  "category": "Utilities",
+  "category": "loaders",  // Adjust the category if needed
+  "class": "ModelDownloader",
+  "function": "load_checkpoint",
   "inputs": [
     {
-      "name": "LINK",
-      "type": "string",
-      "label": "Model Download Link"
-    },
-    {
-      "name": "OUTPUT",
-      "type": "string",
-      "label": "Output Directory"
+      "name": "ckpt_name_or_link",
+      "options": [
+        [folder_paths.get_filename_list("checkpoints"), "Local Checkpoint"],
+        "STRING"
+      ]
     }
   ],
   "outputs": [
     {
       "name": "MODEL",
-      "type": "any",
-      "label": "Loaded Model"
+      "type": "MODEL"
+    },
+    {
+      "name": "CLIP",
+      "type": "CLIP"
+    },
+    {
+      "name": "VAE",
+      "type": "VAE"
     }
   ]
 }

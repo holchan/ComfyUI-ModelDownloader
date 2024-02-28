@@ -3,17 +3,15 @@ import subprocess
 import folder_paths, comfy.model_management
 
 class ModelDownloader:
+    """
+    Model downloader and loader class.
+
+    Provides functionalities for downloading models from URLs and loading them.
+    """
+
     MODEL_TYPE = "Checkpoint"  # Default value
 
     @classmethod
-    def INPUT_TYPES(cls):
-        return {
-            "required": {
-                "LINK": ("STRING", {}),
-                "OUTPUT": ("STRING", {}),
-            }
-        }
-
     def download_model(self, link, output, model_type=None):
         """
         Downloads a model from a given link and returns its path.
@@ -44,33 +42,13 @@ class ModelDownloader:
             print(f"Error downloading model: {str(e)}")
             return None
 
-class CheckpointLoaderSimple:
-    """
-    Checkpoint loader class with download functionality.
-    """
-
-    @classmethod
-    def INPUT_TYPES(s):
-        return {
-            "required": {
-                "ckpt_name_or_link": (
-                    (folder_paths.get_filename_list("checkpoints"), ),  # Local files
-                    ("STRING", {}),  # Download via link
-                )
-            }
-        }
-
-    RETURN_TYPES = ("MODEL", "CLIP", "VAE")
-    FUNCTION = "load_checkpoint"
-    CATEGORY = "loaders"
-
     def load_checkpoint(self, ckpt_name_or_link, output_vae=True, output_clip=True):
         """
         Loads a checkpoint, either from a local file or by downloading it first.
 
         Args:
             ckpt_name_or_link (str): The checkpoint name (for local files)
-                                       or URL (for download).
+                or URL (for download).
             output_vae (bool, optional): Whether to output the VAE. Defaults to True.
             output_clip (bool, optional): Whether to output the CLIP. Defaults to True.
 
@@ -80,12 +58,9 @@ class CheckpointLoaderSimple:
 
         # Check if a link is provided, download if necessary
         if isinstance(ckpt_name_or_link, str) and ckpt_name_or_link.startswith("http"):
-            model_downloader = ModelDownloader()
-            downloaded_file = model_downloader.download_model(ckpt_name_or_link, folder_paths.get_folder_paths("checkpoints"))
+            downloaded_file = self.download_model(ckpt_name_or_link, folder_paths.get_folder_paths("checkpoints"))
             if downloaded_file is None:
                 return None  # Error occurred, return None
-
-            # Use the downloaded file path for loading
             ckpt_path = downloaded_file
         else:
             # Use local file path directly
@@ -93,7 +68,6 @@ class CheckpointLoaderSimple:
 
         out = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"))
         return out[:3]
-
 
 
 NODE_CLASS_MAPPINGS = {
