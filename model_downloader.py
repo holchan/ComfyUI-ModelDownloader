@@ -2,6 +2,7 @@ import os
 import subprocess
 
 class ModelDownloader:
+    MODEL_TYPE = "Checkpoint"  # Default value
     @classmethod
     def INPUT_TYPES(cls):
         return {
