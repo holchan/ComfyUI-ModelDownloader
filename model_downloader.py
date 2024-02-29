@@ -76,9 +76,10 @@ class LoRADownloader:
         if strength_model == 0 and strength_clip == 0:
             return (model, clip)
 
-        downloaded_lora = self.download_lora(lora_link, output)
-        if downloaded_lora:
-            model_lora, clip_lora = comfy.sd.load_lora_for_models(model, clip, downloaded_lora, strength_model, strength_clip)
+        downloaded_lora_path = self.download_lora(lora_link, output)
+        if downloaded_lora_path:
+            downloaded_lora_content = comfy.utils.load_torch_file(downloaded_lora_path, safe_load=True)
+            model_lora, clip_lora = comfy.sd.load_lora_for_models(model, clip, downloaded_lora_content, strength_model, strength_clip)
             return (model_lora, clip_lora)
         else:
             print("Error loading Lora. Downloaded file not found.")
