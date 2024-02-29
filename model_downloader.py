@@ -53,6 +53,11 @@ class ModelDownloader:
             print(f"Error downloading file: {e}")
             return None
 
+import os
+import requests
+from urllib.parse import unquote
+import comfy.sd
+
 class LoRADownloader:
     def __init__(self):
         self.loaded_lora = None
@@ -89,10 +94,14 @@ class LoRADownloader:
         try:
             response = requests.get(link, stream=True)
             if response.status_code == 200:
-                # Extract filename from URL
-                filename = os.path.basename(unquote(link.strip('/').split('/')[-1]))
                 # Ensure the output directory exists
                 os.makedirs(output, exist_ok=True)
+                # Extract filename from URL
+                filename = "example.safetensor"  # Default filename
+                content_disposition = response.headers.get('Content-Disposition')
+                if content_disposition:
+                    filename = content_disposition.split('filename=')[1]
+                    filename = unquote(filename).strip('"')
                 # Save downloaded file to output directory
                 downloaded_file = os.path.join(output, filename)
                 with open(downloaded_file, 'wb') as f:
