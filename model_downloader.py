@@ -32,16 +32,19 @@ class ModelDownloader:
             # Ensure the output directory exists
             os.makedirs(output, exist_ok=True)
             
+            # Extract filename from URL
+            filename = "example.safetensors"  # Default filename
+            content_disposition = response.headers.get('Content-Disposition')
+            if content_disposition:
+                filename = content_disposition.split('filename=')[1]
+                filename = unquote(filename).strip('"')
+            # Check if the file already exists
+            downloaded_file = os.path.join(output, filename)
+            if os.path.exists(downloaded_file):
+                return downloaded_file  # File already exists, return its path
+            # Download the file
             response = requests.get(link, stream=True)
             if response.status_code == 200:
-                # Try to get the filename from the URL
-                filename = os.path.basename(unquote(link.strip('/').split('/')[-1]))
-                
-                # Check if the filename has a valid extension, if not, append ".dat"
-                if '.' not in filename:
-                    filename += ".safetensors"
-                
-                downloaded_file = os.path.join(output, filename)
                 with open(downloaded_file, 'wb') as f:
                     for chunk in response.iter_content(chunk_size=1024):
                         f.write(chunk)
@@ -52,11 +55,6 @@ class ModelDownloader:
         except Exception as e:
             print(f"Error downloading file: {e}")
             return None
-
-import os
-import requests
-from urllib.parse import unquote
-import comfy.sd
 
 class LoRADownloader:
     def __init__(self):
@@ -102,8 +100,11 @@ class LoRADownloader:
                 if content_disposition:
                     filename = content_disposition.split('filename=')[1]
                     filename = unquote(filename).strip('"')
-                # Save downloaded file to output directory
+                # Check if the file already exists
                 downloaded_file = os.path.join(output, filename)
+                if os.path.exists(downloaded_file):
+                    return downloaded_file  # File already exists, return its path
+                # Save downloaded file to output directory
                 with open(downloaded_file, 'wb') as f:
                     for chunk in response.iter_content(chunk_size=1024):
                         f.write(chunk)
