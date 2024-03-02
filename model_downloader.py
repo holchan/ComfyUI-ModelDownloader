@@ -32,23 +32,24 @@ class ModelDownloader:
             # Ensure the output directory exists
             os.makedirs(output, exist_ok=True)
             
-            # Extract filename from URL
-            filename = "example.safetensors"  # Default filename
-            content_disposition = response.headers.get('Content-Disposition')
-            if content_disposition:
-                filename = content_disposition.split('filename=')[1]
-                filename = unquote(filename).strip('"')
-            # Check if the file already exists
-            downloaded_file = os.path.join(output, filename)
-            if os.path.exists(downloaded_file):
-                return downloaded_file  # File already exists, return its path
             # Download the file
             response = requests.get(link, stream=True)
             if response.status_code == 200:
+                # Extract filename from URL
+                filename = "example.safetensors"  # Default filename
+                content_disposition = response.headers.get('Content-Disposition')
+                if content_disposition:
+                    filename = content_disposition.split('filename=')[1]
+                    filename = unquote(filename).strip('"')
+                # Check if the file already exists
+                downloaded_file = os.path.join(output, filename)
+                if os.path.exists(downloaded_file):
+                    return downloaded_file  # File already exists, return its path
+                # Save downloaded file to output directory
                 with open(downloaded_file, 'wb') as f:
                     for chunk in response.iter_content(chunk_size=1024):
                         f.write(chunk)
-                return downloaded_file
+                return downloaded_file  # Return the path to the downloaded file
             else:
                 print(f"Error downloading file: HTTP status code {response.status_code}")
                 return None
